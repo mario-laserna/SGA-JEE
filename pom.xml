@@ -69,7 +69,7 @@
 			<configuration>
 				<archive>
 					<manifest>
-						<mainClass>mx.com.gm.sga.cliente.ClientePersonaService</mainClass>
+						<mainClass>co.mlh.sga.cliente.ClientePersonaService</mainClass>
 					</manifest>
 				</archive>
 				<descriptorRefs>
