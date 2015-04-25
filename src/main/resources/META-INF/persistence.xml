@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="PersonaPU" transaction-type="JTA">
 		<jta-data-source>jdbc/PersonaDb</jta-data-source>
+		<class>co.mlh.sga.domain.Persona</class>
+		<class>co.mlh.sga.domain.Usuario</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 		</properties>

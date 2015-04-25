@@ -2,60 +2,51 @@ package co.mlh.sga.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import java.util.List;
+
+
+/**
+ * The persistent class for the persona database table.
+ * 
+ */
 @Entity
-@NamedQueries({
-	@NamedQuery(name="Persona.findAll", query="select p from Persona p order by p.idPersona")
-})
-@Table(name="persona")
+@NamedQuery(name="Persona.findAll", query="SELECT p FROM Persona p ORDER BY p.idPersona")
 public class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id_persona")
-	private int idPersona;
-	
-	@Column(nullable=false, length=45)
-	private String nombre;
-	
-	@Column(name="apellido_paterno", nullable=false, length=45)
-	private String apePaterno;
-	
-	@Column(name="apellido_materno", length=45)
+	private Integer idPersona;
+
+	@Column(name="apellido_materno")
 	private String apeMaterno;
-	
-	@Column(nullable=false, length=45)
+
+	@Column(name="apellido_paterno")
+	private String apePaterno;
+
 	private String email;
-	
-	@Column(length=45)
+
+	private String nombre;
+
 	private String telefono;
-	
+
+	//bi-directional many-to-one association to Usuario
+	@OneToMany(mappedBy="persona", cascade={CascadeType.ALL})
+	private List<Usuario> usuarios;
+
 	public Persona() {
 	}
-
-	public Persona(int idPersona, String nombre, String apePaterno,
-			String apeMaterno, String email, String telefono) {
-		super();
+	
+	public Persona(int idPersona) {
 		this.idPersona = idPersona;
-		this.nombre = nombre;
-		this.apePaterno = apePaterno;
-		this.apeMaterno = apeMaterno;
-		this.email = email;
-		this.telefono = telefono;
 	}
 	
-	public Persona(String nombre, String apePaterno,
+	public Persona(int idPersona, String nombre, String apePaterno,
 			String apeMaterno, String email, String telefono) {
-		super();
+		this.idPersona = idPersona;
 		this.nombre = nombre;
 		this.apePaterno = apePaterno;
 		this.apeMaterno = apeMaterno;
@@ -63,58 +54,149 @@ public class Persona implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public int getIdPersona() {
-		return idPersona;
-	}
-
-	public void setIdPersona(int idPersona) {
-		this.idPersona = idPersona;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
+	public Persona(String nombre, String apePaterno, String apeMaterno,
+			String email, String telefono) {
 		this.nombre = nombre;
-	}
-
-	public String getApePaterno() {
-		return apePaterno;
-	}
-
-	public void setApePaterno(String apePaterno) {
 		this.apePaterno = apePaterno;
+		this.apeMaterno = apeMaterno;
+		this.email = email;
+		this.telefono = telefono;
+	}
+
+	public Integer getIdPersona() {
+		return this.idPersona;
+	}
+
+	public void setIdPersona(Integer idPersona) {
+		this.idPersona = idPersona;
 	}
 
 	public String getApeMaterno() {
-		return apeMaterno;
+		return this.apeMaterno;
 	}
 
 	public void setApeMaterno(String apeMaterno) {
 		this.apeMaterno = apeMaterno;
 	}
 
+	public String getApePaterno() {
+		return this.apePaterno;
+	}
+
+	public void setApePaterno(String apePaterno) {
+		this.apePaterno = apePaterno;
+	}
+
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	public String getNombre() {
+		return this.nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 	public String getTelefono() {
-		return telefono;
+		return this.telefono;
 	}
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
+	public List<Usuario> getUsuarios() {
+		return this.usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public Usuario addUsuario(Usuario usuario) {
+		getUsuarios().add(usuario);
+		usuario.setPersona(this);
+
+		return usuario;
+	}
+
+	public Usuario removeUsuario(Usuario usuario) {
+		getUsuarios().remove(usuario);
+		usuario.setPersona(null);
+
+		return usuario;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((apeMaterno == null) ? 0 : apeMaterno.hashCode());
+		result = prime * result
+				+ ((apePaterno == null) ? 0 : apePaterno.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result
+				+ ((idPersona == null) ? 0 : idPersona.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result
+				+ ((telefono == null) ? 0 : telefono.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Persona other = (Persona) obj;
+		if (apeMaterno == null) {
+			if (other.apeMaterno != null)
+				return false;
+		} else if (!apeMaterno.equals(other.apeMaterno))
+			return false;
+		if (apePaterno == null) {
+			if (other.apePaterno != null)
+				return false;
+		} else if (!apePaterno.equals(other.apePaterno))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (idPersona == null) {
+			if (other.idPersona != null)
+				return false;
+		} else if (!idPersona.equals(other.idPersona))
+			return false;
+		if (nombre == null) {
+			if (other.nombre != null)
+				return false;
+		} else if (!nombre.equals(other.nombre))
+			return false;
+		if (telefono == null) {
+			if (other.telefono != null)
+				return false;
+		} else if (!telefono.equals(other.telefono))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
-		return "Persona [idPersona=" + idPersona + ", nombre=" + nombre
-				+ ", apePaterno=" + apePaterno + ", apeMaterno=" + apeMaterno
-				+ ", email=" + email + ", telefono=" + telefono + "]";
+		return "Persona [idPersona=" + idPersona + ", apeMaterno=" + apeMaterno
+				+ ", apePaterno=" + apePaterno + ", email=" + email
+				+ ", nombre=" + nombre + ", telefono=" + telefono + "]";
 	}
+
 }
